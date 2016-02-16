@@ -31,6 +31,8 @@ and an (optional) list of missing entries.
 Consider a data table A that is approximately rank k, where the first n1 columns
 contain Boolean data, and the next n2 columns contain numerical data. 
 
+    from numpy.random import randn
+    from numpy import sign
     m, n1, n2, k = 50, 25, 25, 5
     eta = 0.1 # noise
     A = randn(m,k).dot(randn(k,n1+n2)) + eta*randn(m,n1+n2)
@@ -63,9 +65,9 @@ For example, if a 4x4 block of data is missing from the center of A,
 this corresponds to rows 24-27 and columns 49-50 of submatrix 1,
 and rows 24-27 and columns 1-2 of submatrix 2. (Python is 0-indexed.)
 
-    missing1     = [(23, 48), (23, 49), (24, 48), (24, 49), \
-                    (25, 48), (25, 49), (26, 48), (26, 49)]
-    missing2     = [(23, 0), (23, 1), (24, 0), (24, 1), \
+    missing1     = [(23, 23), (23, 24), (24, 23), (24, 24),
+                    (25, 23), (25, 24), (26, 23), (26, 24)]
+    missing2     = [(23, 0), (23, 1), (24, 0), (24, 1),
                     (25, 0), (25, 1), (26, 0), (26, 1)]
     missing_list = [missing1, missing2]
 
@@ -76,12 +78,12 @@ that no entries are missing.
 of the alternating minimization algorithm, create a Convergence object to pass
 to the model. The default parameter values are shown below.
 
-    from glrm.util import Convergence
+    from glrm.convergence import Convergence
     c = Convergence(TOL = 1e-3, max_iters = 1000)
 
 All that remains is to initialize the GLRM model and call fit().
 
-    model = GLRM(A_list, loss_list, regX, regY, k, missing = missing_list, converge = c)
+    model = GLRM(A_list, loss_list, regX, regY, k, missing_list = missing_list, converge = c)
     model.fit()
 
 To extract the factors X, Y and impute missing values,
@@ -109,7 +111,7 @@ To view convergence history,
  - LinearReg
  - QuadraticReg
 
-## Developing loss functions and regularizers (not guaranteed to work yet)
+## Developing loss functions and regularizers (not implemented yet)
 
  - FractionalLoss
  - NonnegativeReg
